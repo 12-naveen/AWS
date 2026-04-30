@@ -1,0 +1,395 @@
+# AWS CLOUD LAB THEORY GUIDE (WEEK 6 TO WEEK 13)
+
+## Purpose:
+
+This guide provides week-wise theoretical step-by-step explanations of what is performed in each AWS lab practical. It is designed for theory exams, viva, record writing, and mentor explanation.
+
+---
+
+# WEEK 6: VPC WITH BASTION SERVER AND NAT GATEWAY
+
+## Objective:
+
+To design a secure custom VPC architecture with public and private subnets, secure SSH administration through a Bastion server, and outbound internet access for private servers via NAT Gateway.
+
+## Theory Steps:
+
+1. Login to AWS Console.
+2. Create a custom VPC with CIDR block 10.0.0.0/16.
+3. Create:
+
+   * Public Subnet (10.0.1.0/24)
+   * Private Subnet (10.0.2.0/24)
+4. Create and attach an Internet Gateway to the VPC.
+5. Configure a Public Route Table:
+
+   * Route 0.0.0.0/0 → Internet Gateway
+6. Associate Public Subnet with Public Route Table.
+7. Create security groups:
+
+   * BastionSG: SSH from admin IP
+   * DatabaseSG: SSH/MySQL only from Bastion subnet
+8. Launch Bastion Server in Public Subnet.
+9. Launch Database Server in Private Subnet without public IP.
+10. Transfer private key from local machine to Bastion server.
+11. SSH from local machine → Bastion → Private DB server.
+12. Verify private server cannot access internet initially.
+13. Create NAT Gateway in Public Subnet.
+14. Allocate Elastic IP to NAT Gateway.
+15. Create Private Route Table:
+
+* Route 0.0.0.0/0 → NAT Gateway
+
+16. Associate Private Subnet with Private Route Table.
+17. Verify private server internet access using apt update.
+18. Cleanup all resources.
+
+## Key Concepts:
+
+* VPC Isolation
+* Bastion Architecture
+* NAT Gateway
+* Secure Administration
+* Route Tables
+
+---
+
+# WEEK 7: S3 → LAMBDA → DYNAMODB SERVERLESS AUTOMATION
+
+## Objective:
+
+To automate file upload event processing using serverless AWS services.
+
+## Theory Steps:
+
+1. Login to AWS Console.
+2. Create an S3 bucket for file uploads.
+3. Enable bucket versioning.
+4. Create DynamoDB table:
+
+   * Partition key: unique
+5. Create Lambda function using Python runtime.
+6. Configure Lambda execution role.
+7. Add S3 trigger to Lambda:
+
+   * All object create events
+8. Write Lambda code to:
+
+   * Capture bucket name
+   * Capture object name
+   * Capture metadata
+   * Store metadata in DynamoDB
+9. Deploy Lambda code.
+10. Add IAM inline policy for DynamoDB PutItem.
+11. Upload files to S3 bucket.
+12. Verify:
+
+* Lambda invocation
+* DynamoDB records
+* CloudWatch logs
+
+13. Monitor errors and execution.
+14. Cleanup resources.
+
+## Key Concepts:
+
+* Event-driven computing
+* AWS Lambda
+* DynamoDB
+* IAM Policies
+* CloudWatch Logs
+* Serverless architecture
+
+---
+
+# WEEK 8: SNS, SQS, S3 → SNS → SQS → LAMBDA
+
+## Objective:
+
+To implement messaging, notifications, and decoupled serverless event architecture.
+
+## Theory Steps:
+
+### SNS:
+
+1. Create SNS topic.
+2. Add email subscription.
+3. Confirm subscription.
+4. Publish test messages.
+
+### S3 → SNS:
+
+5. Create S3 bucket.
+6. Configure event notifications.
+7. Connect S3 uploads to SNS topic.
+8. Verify email notifications.
+
+### SQS:
+
+9. Create SQS queue.
+10. Send messages.
+11. Poll and receive messages.
+
+### SNS → SQS → Lambda:
+
+12. Create SNS topic.
+13. Create SQS queue.
+14. Subscribe SQS to SNS.
+15. Configure SQS access policy.
+16. Configure SNS access policy for S3.
+17. Configure S3 upload event to SNS.
+18. Create Lambda consumer function.
+19. Add SQS trigger to Lambda.
+20. Deploy code.
+21. Upload files to S3.
+22. Verify full workflow:
+
+* S3
+* SNS
+* SQS
+* Lambda
+* CloudWatch
+
+23. Cleanup.
+
+## Key Concepts:
+
+* Publish-subscribe
+* Message queues
+* Decoupled systems
+* Asynchronous processing
+* Serverless workflows
+
+---
+
+# WEEK 9: ELASTIC LOAD BALANCER + AUTO SCALING GROUP
+
+## Objective:
+
+To deploy scalable, highly available web infrastructure using EC2, ALB, and ASG.
+
+## Theory Steps:
+
+1. Launch EC2 webserver-1.
+2. Install Apache web server.
+3. Configure test webpage.
+4. Launch EC2 webserver-2.
+5. Install Apache.
+6. Configure second webpage.
+7. Create load balancer security group.
+8. Create Application Load Balancer.
+9. Select VPC and multiple subnets.
+10. Create target group.
+11. Register both EC2 instances.
+12. Configure health checks.
+13. Verify ALB DNS routing.
+14. Refresh browser to observe traffic distribution.
+15. Create AMI from configured webserver.
+16. Create Launch Template using AMI.
+17. Create Auto Scaling Group:
+
+* Desired: 2
+* Min: 1
+* Max: 4
+
+18. Attach ALB to ASG.
+19. Configure health checks.
+20. Verify automatic scaling and replacement.
+21. Test fault tolerance by terminating instance.
+22. Verify new instance launches.
+23. Cleanup.
+
+## Key Concepts:
+
+* High availability
+* Load balancing
+* Auto scaling
+* Fault tolerance
+* CloudWatch metrics
+
+---
+
+# WEEK 10: ELASTIC BEANSTALK APPLICATION DEPLOYMENT
+
+## Objective:
+
+To deploy applications using AWS managed PaaS.
+
+## Theory Steps:
+
+1. Login to AWS Console.
+2. Open Elastic Beanstalk.
+3. Create application.
+4. Create environment.
+5. Select platform.
+6. Upload application package.
+7. Configure service roles.
+8. Configure EC2 instance profile.
+9. Configure VPC and subnets.
+10. Select instance type.
+11. Deploy environment.
+12. Verify health status.
+13. Access application via provided URL.
+14. Upload new versions.
+15. Redeploy updates.
+16. Monitor logs.
+17. Terminate environment.
+18. Cleanup roles/resources.
+
+## Key Concepts:
+
+* Platform as a Service
+* Managed deployment
+* Auto provisioning
+* Application versioning
+
+---
+
+# WEEK 11: AMAZON LEX CHATBOT
+
+## Objective:
+
+To create an AI-powered hotel booking chatbot.
+
+## Theory Steps:
+
+1. Open Amazon Lex.
+2. Create chatbot.
+3. Configure bot name.
+4. Select IAM permissions.
+5. Create intents.
+6. Add sample utterances.
+7. Configure slots:
+
+   * Name
+   * Age
+   * Location
+   * Check-in date
+   * Nights
+8. Add slot prompts.
+9. Configure confirmation prompts.
+10. Build bot.
+11. Test conversations.
+12. Verify slot capture.
+13. Adjust prompts if errors occur.
+14. Save and publish bot.
+15. Cleanup if required.
+
+## Key Concepts:
+
+* NLP chatbots
+* Intents
+* Slots
+* Conversational AI
+* User interaction flows
+
+---
+
+# WEEK 12: IAM + AWS CLI + S3 MANAGEMENT
+
+## Objective:
+
+To manage AWS users securely and operate S3 via command line.
+
+## Theory Steps:
+
+1. Login as root/admin.
+2. Open IAM.
+3. Create IAM user.
+4. Assign permissions.
+5. Generate access keys.
+6. Install AWS CLI locally.
+7. Configure AWS CLI:
+
+   * Access key
+   * Secret key
+   * Region
+8. Verify CLI with aws s3 ls.
+9. Create S3 bucket using CLI.
+10. Upload objects.
+11. List bucket contents.
+12. Delete objects.
+13. Delete bucket.
+14. Remove IAM test users.
+15. Cleanup access keys.
+
+## Key Concepts:
+
+* IAM security
+* Access management
+* AWS CLI
+* S3 operations
+* Programmatic AWS usage
+
+---
+
+# WEEK 13: IAM ROLE FOR EC2 + S3 ACCESS
+
+## Objective:
+
+To securely grant AWS service permissions without static credentials.
+
+## Theory Steps:
+
+1. Login to AWS Console.
+2. Open IAM.
+3. Create IAM Role for EC2.
+4. Assign AmazonS3FullAccess policy.
+5. Launch EC2 instance.
+6. Connect to EC2.
+7. Verify no S3 access initially.
+8. Attach IAM role to EC2.
+9. Reconnect instance.
+10. Run aws s3 ls.
+11. Verify temporary credential-based access.
+12. Test restricted EC2 permissions.
+13. Understand trust relationships.
+14. Cleanup:
+
+* Terminate EC2
+* Delete IAM role
+
+## Key Concepts:
+
+* IAM Roles
+* Temporary credentials
+* Least privilege
+* Service trust policies
+* Secure cloud access
+
+---
+
+# FINAL OVERALL LAB LEARNING OUTCOMES
+
+## By completing Weeks 6–13, you demonstrate:
+
+✔ Secure networking architecture
+✔ Serverless automation
+✔ Messaging systems
+✔ High availability systems
+✔ Managed deployments
+✔ Conversational AI
+✔ IAM security
+✔ CLI operations
+✔ Role-based AWS access
+
+---
+
+# THEORY EXAM PREPARATION TIPS:
+
+## Focus on:
+
+* Architecture diagrams
+* AWS service purpose
+* Security configurations
+* Workflow steps
+* IAM permissions
+* Trigger mechanisms
+* Scaling concepts
+* Cleanup procedures
+
+---
+
+# CONCLUSION:
+
+This complete AWS lab series builds practical and theoretical expertise in cloud architecture, networking, automation, security, deployment, scaling, and serverless computing.
